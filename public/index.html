@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Uncomment if you want your page to NOT be indexed by search engines: -->
+  <!-- <meta name="robots" content="none"> -->
+  <link rel="stylesheet" href="style.css" />
+  <title>The Math of Casino Card Games</title>
+
+  <!-- Uncomment if using d3: -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+
+  <!-- Seeded Random -->
+  <script src="//cdnjs.cloudflare.com/ajax/libs/seedrandom/3.0.5/seedrandom.min.js"></script>
+
+  <!-- Fontawesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- LaTeX -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <!-- Uncomment if using Vega-Lite -->
+  <!-- <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite-api@5.0.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-tooltip"></script> -->
+</head>
+
+<!------------------------------------------------------------>
+<!-- You are free to modify this template however you want! -->
+<!------------------------------------------------------------>
+
+<body>
+  <div class="body-wrapper">
+    <header>
+      <h1><a href=".">The Math of Casino Card Games</a></h1>
+      <p>
+        <strong>Team Members</strong>: Lucas Youngers, Christopher Hunt, Alex Vlashev
+      </p>
+    </header>
+    <main>
+      <!-- <section>
+        <strong>Disclaimer:</strong>
+        <em>
+          This project is not yet functional, but thanks for taking a look! Soon, the visualizations should
+          be fully interactive and reactive. In particular, you will be able to generate random hands of
+          each major subtype, guess whether a hand will win and see the actual results (The first visualzation), simulate real random
+          games with your hole and community cards (the second visualzation), and then play random guessing games at the end, once
+          you have a feel for the odds (the third visulaztion).
+        </em>
+      </section> -->
+      <section style="padding-top: 1em;">
+        <h2>Introduction to Poker</h2>
+        In this article, we will consider the math behind Texas Hold'em, a popular variation of poker.
+        We will not consider betting; rather, the odds at any given point in the process that your hole cards,
+        in combination with the community cards, will win.
+        <h4>Hole Cards</h4>
+        When the game starts, each player is dealt two cards face-down, which are referred to as the hole cards.
+        These cards are unique to each player, and make their hand distinct from the other players'.
+        <h4>Community Cards</h4>
+        Throughout the round, five cards are dealt face up on the table, in sets of 3, 1, and 1, referred to as
+        the "flop", "turn", and "river", respectively. These cards can be used by all players to create their
+        final hand of five cards.
+        <h4>Scoring</h4>
+        Once all the cards are dealt, each player creates the best hand of five cards they can. They are then scored,
+        and the player with the best hand wins. The types of hands are as follows, rated from 1 (lowest) to 9
+        (highest). (Note: you can click on the dice next to the hand type to be given another example.)
+        <section class="scoring__cards">
+          <section class="scoring__card">
+            <h5>1. High Card <i id="reroll-high-card" class="fa-solid fa-dice"></i></h5>
+            <p>
+              If you don't have any of the following interesting hands, your hand is considered to be a high card hand.
+              When this is the case, you score based on the highest card in your hand, breaking ties with the next
+              highest, etc.
+            </p>
+            <div id="example-high-card" class="hand">
+              <img class="card" src="cards/KC.svg">
+              <img class="card" src="cards/7S.svg">
+              <img class="card" src="cards/TC.svg">
+              <img class="card" src="cards/2D.svg">
+              <img class="card" src="cards/9H.svg">
+            </div>
+          </section>
+          <section class="scoring__card">
+            <h5>2. Pair <i id="reroll-pair" class="fa-solid fa-dice"></i></h5>
+            <p>
+              The lowest-scoring interesting hand in poker is the pair, which consists of two cards of the
+              same rank. It beats a high card, and is often the lowest hand worth betting on.
+            </p>
+            <div id="example-pair" class="hand">
+              <img class="card" src="cards/7D.svg">
+              <img class="card" src="cards/7S.svg">
+              <img class="card" src="cards/TC.svg">
+              <img class="card" src="cards/2D.svg">
+              <img class="card" src="cards/9H.svg">
+            </div>
+          </section>
+          <section class="scoring__card">
+            <h5>3. Two Pair <i id="reroll-two-pair" class="fa-solid fa-dice"></i></h5>
+            <p>
+              What's better than one pair? Two pairs! This hand type beats a pair, but is still in the lower
+              echelon of hands. However, it is still often worth betting on.
+            </p>
+            <div id="example-two-pair" class="hand">
+              <img class="card" src="cards/7D.svg">
+              <img class="card" src="cards/7S.svg">
+              <img class="card" src="cards/TC.svg">
+              <img class="card" src="cards/TD.svg">
+              <img class="card" src="cards/9H.svg">
+            </div>
+          </section>
+          <section class="scoring__card">
+            <h5>4. Three of a Kind <i id="reroll-three-kind" class="fa-solid fa-dice"></i></h5>
+            <p>
+              The next lowest-scoring hand in poker is the three of a kind, which conists of three cards of the
+              same rank. This is quite a powerful hand for only needing three cards.
+            </p>
+            <div id="example-three-kind" class="hand">
+              <img class="card" src="cards/7D.svg">
+              <img class="card" src="cards/7S.svg">
+              <img class="card" src="cards/7C.svg">
+              <img class="card" src="cards/2D.svg">
+              <img class="card" src="cards/9H.svg">
+            </div>
+          </section>
+
+          <section class="scoring__card">
+            <h5>5. Straight <i id="reroll-straight" class="fa-solid fa-dice"></i></h5>
+            <p>
+              The first hand that includes all five cards is the straight, which consists of an incrementally
+              increasing run of cards. Note that you can start or end a run with an Ace, but in an Ace-low straight,
+              the Ace will be counted low for breaking ties.
+            </p>
+            <div id="example-straight" class="hand">
+              <img class="card" src="cards/5D.svg">
+              <img class="card" src="cards/6S.svg">
+              <img class="card" src="cards/7C.svg">
+              <img class="card" src="cards/8D.svg">
+              <img class="card" src="cards/9H.svg">
+            </div>
+          </section>
+
+          <section class="scoring__card">
+            <h5>6. Flush <i id="reroll-flush" class="fa-solid fa-dice"></i></h5>
+            <p>
+              This hand includes 5 cards of the same suit. Since straights and flushes can occur simultaneously,
+              it is often worth betting on two sequential cards of the same suit. When breaking ties with this
+              hand, the highest card wins, and then the next highest, and so on.
+            </p>
+            <div id="example-flush" class="hand">
+              <img class="card" src="cards/2S.svg">
+              <img class="card" src="cards/4S.svg">
+              <img class="card" src="cards/8S.svg">
+              <img class="card" src="cards/TS.svg">
+              <img class="card" src="cards/QS.svg">
+            </div>
+          </section>
+
+          <section class="scoring__card">
+            <h5>7. Full House <i id="reroll-full-house" class="fa-solid fa-dice"></i></h5>
+            <p>
+              The first of the hands that combine previous types, the full house contains both a pair and a
+              three-of-a-kind, beating most hands with ease. In Texas Hold'em, you might achieve this by holding
+              a pair, and having a matching card and another pair in the community pile.
+            </p>
+            <div id="example-full-house" class="hand">
+              <img class="card" src="cards/7D.svg">
+              <img class="card" src="cards/7S.svg">
+              <img class="card" src="cards/7C.svg">
+              <img class="card" src="cards/2D.svg">
+              <img class="card" src="cards/2H.svg">
+            </div>
+          </section>
+
+          <section class="scoring__card">
+            <h5>8. Four of a Kind <i id="reroll-four-kind" class="fa-solid fa-dice"></i></h5>
+            <p>
+              If a pair beats a high card, and a three-of-a-kind beats a pair, the four-of-a-kind is the
+              culmination of this pattern. If you can manage to get ahold of all four cards of a rank, you
+              have the second most powerful hand in the game.
+            </p>
+            <div id="example-four-kind" class="hand">
+              <img class="card" src="cards/7D.svg">
+              <img class="card" src="cards/7S.svg">
+              <img class="card" src="cards/7C.svg">
+              <img class="card" src="cards/7H.svg">
+              <img class="card" src="cards/9H.svg">
+            </div>
+          </section>
+
+          <section class="scoring__card">
+            <h5>9. Straight Flush <i id="reroll-straight-flush" class="fa-solid fa-dice"></i></h5>
+            <p>
+              This is it, the most powerful hand in the game. Five sequential cards, all of the same suit. Like
+              we mentioned above, it's useful to keep suited sequential cards, both because straights and flushes
+              are good indpenendently, but also because getting a straight flush essentially wins you the hand.
+            </p>
+            <div id="example-straight-flush" class="hand">
+              <img class="card" src="cards/9S.svg">
+              <img class="card" src="cards/TS.svg">
+              <img class="card" src="cards/JS.svg">
+              <img class="card" src="cards/QS.svg">
+              <img class="card" src="cards/KS.svg">
+            </div>
+          </section>
+        </section>
+      </section>
+
+      <section>
+        <h2>Does this Win?</h2>
+        Imagine you're playing a game of poker, and you've been dealt the following hole cards. There's one
+        other player at the table, and you share the following community cards. On average, will your hand win
+        (counting ties against you)?
+        <div class="game-container">
+          <div class="vis-container">
+            <h4>Community Cards</h4>
+            <div id="comm-container-1" class="hand"></div>
+            <h4>Hole Cards</h4>
+            <div class="holes-container">
+              <div id="hole-container-1" class="hand"></div>
+              <div id="opp-hole-container-1" class="hand">
+                <img class="card" src="cards/RED_BACK.svg">
+                <img class="card" src="cards/RED_BACK.svg">
+              </div>
+            </div>
+            <div id="input-container-1">
+              <h4>Do You Win?</h4>
+              <button id="input-yes-1">Yes</button>
+              <button id="input-no-1">No</button>
+              <button id="input-new-1">New Game</button>
+              <section id="special-games-1" class="special-games">
+                <button id="high-card-game-1">High Card</button>
+                <button id="pair-game-1">Pair </button>
+                <button id="two-pair-game-1">Two Pair </button>
+                <button id="three-of-a-kind-game-1">Three of a Kind</button>
+                <button id="straight-game-1">Straight</button>
+                <button id="flush-game-1">Flush</button>
+                <button id="full-house-game-1">Full House</button>
+                <button id="four-of-a-kind-game-1">Four of a Kind</button>
+                <button id="straight-flush-game-1">Straight Flush</button>
+              </section>
+            </div>
+          </div>
+          <div id="results-container-1" class="hidden">
+            <h4>Results</h4>
+            <svg id="vis1" width="350" height="250"></svg>
+            <p id="results-1"></p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Why Did it Win? (or not)</h2>
+        <p>
+          Why is it the case that the hand from the previous exercise did or did not win on average? We provided
+          a handy bar chart showing the number of ways you can win, tie, and lose. In short, there aren't
+          actually that many possible hands your opponent can have, since they only have two unique cards.
+          Specifically, if you have two hole cards and there are five community cards, then there are only
+          \({45\choose 2}=990\) possible two-card combinations, each of which only has one best hand of five
+          cards, when combined with the community pool. Hence, we can calculate the number of hands that your hand wins
+          against, loses against, and ties with, simply by considering all 990 possible opposing hands.
+        </p>
+        <p>
+          Let's see the math in action. Below, you can simulate the game from above, but with a random
+          pair of hole cards for the opponent each time. As you generate these, we will keep track of the
+          running results, re-computing the percentage of wins each time. As the number of games grows large,
+          it should approach the theoretical odds of winning, plotted on the dotted black line.
+        </p>
+        <section>
+          <div class="game-container">
+            <div class="vis-container">
+              <h4>Community Cards</h4>
+              <div id="comm-container-2" class="hand"></div>
+              <div class="holes-container">
+                <div>
+                  <h4>Hole Cards</h4>
+                  <div id="hole-container-2" class="hand"></div>
+                </div>
+                <div style="width: 145px; direction: rtl; white-space: nowrap;">
+                  <h4>Opponent's Hole Cards</h4>
+                  <div id="opp-hole-container-2" class="hand"></div>
+                </div>
+              </div>
+              <div id="input-container-2">
+                <button id="input-next-2">Next Hand</button>
+                <button id="input-next-ten-2">Next 10 Hands</button>
+                <button id="input-new-2">New Game</button>
+                <section id="special-games-2" class="special-games">
+                  <button id="high-card-game-2">High Card</button>
+                  <button id="pair-game-2">Pair </button>
+                  <button id="two-pair-game-2">Two Pair </button>
+                  <button id="three-of-a-kind-game-2">Three of a Kind</button>
+                  <button id="straight-game-2">Straight</button>
+                  <button id="flush-game-2">Flush</button>
+                  <button id="full-house-game-2">Full House</button>
+                  <button id="four-of-a-kind-game-2">Four of a Kind</button>
+                  <button id="straight-flush-game-2">Straight Flush</button>
+                </section>
+              </div>
+            </div>
+            <div id="results-container-2">
+              <h4 id="results-title-2">Results (0 Game(s) Played)</h4>
+              <svg id="vis2" width="350" height="280"></svg>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section>
+        <h2>Hand Probabilities</h2>
+        <p>
+          Using our framework, we ran simulated 1000 games per each of the different hand types to get an
+          estimate of the average win rate of each of the hand types. We found the following results:
+        </p>
+        <svg id="static-vis1" width="800" height="250"></svg>
+        <p>
+          However, this experiment doesn't consider how many hole cards make up the given hand. For example, 
+          the hand could be 1 hole card and 4 community cards; 0 hole cards and 5 community cards or 2 hole
+          cards and 3 community cards. To Better inform the user of their odds we ran the simulation 2 more
+          times Once with 1 hole card and another with 2-hole cards and found the following:
+        </p>
+        <svg id="static-vis2" width="800" height="250"></svg>
+      </sections>
+
+      <section>
+        <h2>Does this Win? (part 2)</h2>
+        Now that you've (hopefully) got the hang of poker, let's play again! You'll be dealt two hole cards
+        and five community cards, and have to guess whether your hand will win on average. Think you have
+        what it takes?
+        <section>
+          <div class="game-container">
+            <div class="vis-container">
+              <h4>Community Cards</h4>
+              <div id="comm-container-3" class="hand"></div>
+              <h4>Hole Cards</h4>
+              <div class="holes-container">
+                <div id="hole-container-3" class="hand"></div>
+                <div id="opp-hole-container-3" class="hand">
+                  <img class="card" src="cards/RED_BACK.svg">
+                  <img class="card" src="cards/RED_BACK.svg">
+                </div>
+              </div>
+              <div id="input-container-3">
+                <h4>Do You Win?</h4>
+                <button id="input-yes-3">Yes</button>
+                <button id="input-no-3">No</button>
+                <button id="input-new-3">New Random Game</button>
+              </div>
+            </div>
+            <div id="results-container-3">
+              <h4>Results</h4>
+              <svg id="vis3" width="350" height="250"></svg>
+              <p id="results-3"></p>
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <footer>
+      <p>
+        <a href="https://gitlab.cs.washington.edu/cse442/24wi/final-project/casino-card-games">Repository</a>
+        <br>
+        <a href="https://courses.cs.washington.edu/courses/cse442/23wi/">CSE 442 Data Visualization</a>
+        <br>
+        <a href="https://www.washington.edu">University of Washington</a>
+      </p>
+    </footer>
+  </div>
+
+  <script src="utils.js"></script>
+  <script src="card.js"></script>
+  <script src="hand.js"></script>
+  <script src="deck.js"></script>
+  <script src="random.js"></script>
+  <script src="main.js"></script>
+</body>
+
+</html>

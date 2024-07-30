@@ -1,0 +1,138 @@
+:root {
+  --dark-green: #05421e;
+  --dark-green-t: #05421e7f;
+  --dark-red: #d40000;
+}
+
+/* Reset padding and margin */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: url(background.jpg) no-repeat center center fixed;
+  background-size: cover;
+  font: 18px/1.5 "Avenir", "Avenir Next", "Helvetica Neue", Arial, sans-serif;
+  padding: 2em 0;
+}
+
+.body-wrapper {
+  background-color: white;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.8);
+  margin: 0 auto;
+  max-width: 90ex;
+  padding: 1.5em;
+}
+
+header {
+  border-bottom: 2px solid var(--dark-green-t);
+  padding-bottom: 1em;
+}
+
+footer {
+  padding-top: 16px;
+  text-align: right;
+}
+
+h1 {
+  color: var(--dark-green);
+  margin-bottom: 1rem;
+}
+
+*+section,
+*+h2,
+*+h3,
+*+h4,
+*+h5,
+*+h6 {
+  margin-top: 1em;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+i.fa-dice {
+  cursor: pointer;
+}
+
+button {
+  all: unset;
+  background-color: rgb(245, 245, 245);
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  min-width: 40px;
+  padding: 0.25em 0.5em;
+  text-align: center;
+  transition: background-color 0.1s ease;
+  user-select: none;
+}
+
+button:hover {
+  background-color: rgb(235, 235, 235);
+}
+
+button:active {
+  box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.scoring__cards {
+  display: grid;
+  grid-gap: 1em;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.scoring__card {
+  background-color: white;
+  border-radius: 0.5em;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  grid-column: span 2;
+  margin: 0;
+  padding: 0.35em 0.55em 0.20em;
+  row-gap: 0.35em;
+}
+
+.scoring__card > p {
+  flex-grow: 1;
+}
+
+.scoring__card:last-child:nth-child(2n - 1) {
+  grid-column-end: 4;
+}
+
+.card {
+  width: 70px;
+}
+
+.holes-container {
+  display: flex;
+  column-gap: 80px;
+}
+
+.game-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.vis-container {
+  width: 400px;
+}
+
+.special-games > button {
+  margin: 2px 0;
+}
+
+#results-container-1,
+#results-container-2,
+#results-container-3 {
+  width: 400px;
+}
+
+.hidden {
+  display: none;
+}
